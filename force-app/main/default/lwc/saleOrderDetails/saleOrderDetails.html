@@ -1,0 +1,215 @@
+<template>
+    <div class="slds-p-around_large">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_small"></lightning-icon>
+                <span>Something went wrong while fetching Sale Order.</span>
+            </div>
+        </template>
+
+        <template if:true={saleOrder}>
+            <section class="slds-grid slds-wrap slds-m-bottom_large">
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-8">
+                    <div class="slds-card slds-p-around_medium slds-theme_shade">
+                        <div class="slds-media slds-m-bottom_medium">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:orders" size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading_medium slds-truncate">Sale Order: {saleOrder.Name}</h2>
+                                <p class="slds-text-body_regular">Account: <strong>{saleOrder.CustomAccount__r.Name}</strong></p>
+                                <lightning-badge variant="success" label={saleOrderStatus} class="slds-m-top_x-small"></lightning-badge>
+                            </div>
+                        </div>
+            
+                        <div class="slds-text-title_caps slds-m-bottom_small">Created Date : <strong>{formattedDate}</strong></div>
+                    </div>
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-8">
+                    <section class="slds-card slds-p-around_medium slds-theme_shade">
+                        <h2 class="slds-text-heading_medium slds-m-bottom_small">Actions</h2>
+                        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                    
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-button slds-box slds-theme_success slds-text-align_center slds-p-around_medium" style="cursor:pointer;"
+                                     role="button" tabindex="0" onclick={handleGenerateBill}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Generate Bill</p>
+                                </div>
+                            </div>
+                    
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-button slds-box slds-theme_info slds-text-align_center slds-p-around_medium" style="cursor:pointer;"
+                                     role="button" tabindex="0" onclick={handleCancelOrder}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Cancel Order</p>
+                                </div>
+                            </div>
+                    
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-button slds-box slds-theme_alert-texture slds-theme_error slds-p-around_medium slds-text-align_center" style="cursor:pointer;"
+                                     role="button" tabindex="0" onclick={handleDeleteOrder}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Delete Order</p>
+                                </div>
+                            </div>
+                    
+                        </div>
+                    </section>
+                    
+                </div>
+                
+            
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-8 ">
+                    <div class="slds-card slds-p-around_medium slds-theme_shade">
+                        <div class="slds-media slds-m-bottom_medium">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:contact" size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading_medium slds-truncate">Contact Info</h2>
+                                <p> <lightning-formatted-email value={saleOrder.Email__c}></lightning-formatted-email></p>
+                                <p>&#9742; <lightning-formatted-phone value={saleOrder.Phone__c}></lightning-formatted-phone></p>
+                            </div>
+                        </div>
+            
+                        <div class="slds-text-title_caps slds-m-bottom_x-small"><strong>Delivery Address</strong></div>
+                        <p>{saleOrder.Address__c}</p>
+                    </div>
+                </div>
+            
+            </section>            
+
+            <section class="slds-card slds-p-around_medium slds-m-bottom_small">
+                <h2 class="slds-text-heading_medium slds-m-bottom_small">Order Items</h2>
+                <template if:true={hasOrderLines}>
+                    <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col"><div class="slds-truncate">Name</div></th>
+                                    <th scope="col"><div class="slds-truncate">Product</div></th>
+                                    <th scope="col"><div class="slds-truncate">Order Type</div></th>
+                                    <th scope="col"><div class="slds-truncate">Qty</div></th>
+                                    <th scope="col"><div class="slds-truncate">Unit Price</div></th>
+                                    <th scope="col"><div class="slds-truncate">Total</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={saleOrderLines} for:item="line">
+                                    <tr key={line.Id}>
+                                        <td>{line.Name}</td>
+                                        <td>{line.Product__r.Name}</td>
+                                        <td>{line.OrderType__c}</td>
+                                        <td><lightning-formatted-number value={line.Quantity__c}></lightning-formatted-number></td>
+                                        <td><lightning-formatted-number value={line.UnitPrice__c} format-style="currency" currency-code="INR"></lightning-formatted-number></td>
+                                        <td><lightning-formatted-number value={line.Total__c} format-style="currency" currency-code="INR"></lightning-formatted-number></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template if:false={hasOrderLines}>
+                    <p class="slds-text-body_regular slds-text-align_center">No items found.</p>
+                </template>
+            </section>
+
+            <div class="slds-grid slds-m-top_small slds-gutters">
+                <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-2">
+                    <section class="slds-card slds-p-around_medium slds-theme_shade">
+                        <h2 class="slds-text-heading_medium slds-m-bottom_small">Payment Summary</h2>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-box slds-theme_info slds-text-align_center slds-p-around_medium">
+                                    <p class="slds-text-title_caps slds-text-color_inverse">Total Amount</p>
+                                    <p class="slds-text-heading_medium">
+                                        <lightning-formatted-number value={saleOrder.TotalPayableAmount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-box slds-theme_success slds-text-align_center slds-p-around_medium">
+                                    <p class="slds-text-title_caps slds-text-color_inverse">Amount Paid</p>
+                                    <p class="slds-text-heading_medium">
+                                        <lightning-formatted-number value={saleOrder.AmountPaid__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_medium">
+                                    <p class="slds-text-title_caps slds-text-color_inverse">Pending Amount</p>
+                                    <p class="slds-text-heading_medium">
+                                        <lightning-formatted-number class="slds-text-color_inverse" value={saleOrder.PendingAmount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                    </p>
+                                    <template if:true={saleOrder.PendingInitiatedPayment__c}>
+                                        <p class="slds-text-color_weak slds-m-top_x-small">Payment Initiated</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-2">
+                    <section class="slds-card slds-p-around_medium slds-theme_shade">
+                        <h2 class="slds-text-heading_medium slds-m-bottom_small">Payment Actions</h2>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-4">
+                                <div class="slds-box slds-theme_success slds-text-align_center slds-p-around_large slds-button slds-button_stretch" style="cursor:pointer;" onclick={handleMakePayment}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Make payment&nbsp;</p>
+                                    <p class="slds-text-heading_medium">
+                                        &#8377;
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                                <div class="slds-box slds-theme_info slds-text-align_center slds-p-around_large slds-button slds-button_stretch" style="cursor:pointer;" onclick={handlePrintBill}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Print Bill</p>
+                                    <p class="slds-text-heading_medium slds-text-align_center">
+                                        🧾
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+                                <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_large slds-button slds-button_stretch" role="button" style="cursor:pointer;" onclick={handlePreviousPayments}>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">payments</p>
+                                    <p class="slds-text-heading_medium slds-text-align_center">
+                                        💵
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </template>
+    </div>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                            onclick={closeModal} title="Close" aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Print Bill</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <iframe src={visualforceUrl} width="100%" height="600px" frameborder="0"></iframe>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={closeModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

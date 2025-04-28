@@ -1,0 +1,107 @@
+<template>
+    <lightning-card title="Premium Super Cars" icon-name="custom:custom97">
+        <div class="slds-p-around_medium">
+            <div class="slds-grid slds-wrap slds-grid_pull-padded">
+                <template for:each={processedProducts} for:item="product">
+                    <div key={product.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-p-around_small">
+                        <article class="product-card" style={product.cardStyle}>
+                            <div class="product-card-inner" style={product.accentStyle}>
+                                <h3 class="slds-text-heading_medium product-title">{product.Name}</h3>
+                                
+                                <div class="product-details">
+                                    <div class="product-spec">
+                                        <lightning-icon icon-name="utility:moneybag" size="x-small" class="spec-icon"></lightning-icon>
+                                        <div class="spec-text">
+                                            <lightning-formatted-number 
+                                                value={product.UnitPrice__c} 
+                                                format-style="currency"
+                                                currency-code="INR"
+                                                class="price-value">
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="product-spec">
+                                        <lightning-icon icon-name="utility:connected_apps" size="x-small" class="spec-icon"></lightning-icon>
+                                        <div class="spec-text">
+                                            <span class="spec-label">Horsepower:</span>
+                                            <span class="spec-value">{product.HorsePower__c}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="product-spec">
+                                        <lightning-icon icon-name="utility:warning" size="x-small" class="spec-icon"></lightning-icon>
+                                        <div class="spec-text">
+                                            <span class="spec-label">Top Speed:</span>
+                                            <span class="spec-value">{product.TopSpeed__c} Mph</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="product-spec">
+                                        <lightning-icon icon-name="utility:setup" size="x-small" class="spec-icon"></lightning-icon>
+                                        <div class="spec-text">
+                                            <span class="spec-label">Engine Type:</span>
+                                            <span class="spec-value">{product.EngineType__c}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="selection-section">
+                                    <span class="selection-label">Select Color:</span>
+                                    <div class="option-grid">
+                                        <template for:each={product.colorOptions} for:item="colorOption">
+                                            <div key={colorOption.uniqueId} class="option-item">
+                                                <span 
+                                                    class="color-radio"
+                                                    style={colorOption.colorStyle}
+                                                    data-product-id={product.Id}
+                                                    data-color-name={colorOption.name}
+                                                    onclick={handleColorChange}>
+                                                    <span class="selected-marker" if:true={colorOption.isSelected}></span>
+                                                </span>
+                                                <span class="option-name">{colorOption.name}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                
+                                <div class="selection-section">
+                                    <span class="selection-label">Interior Material:</span>
+                                    <div class="option-grid">
+                                        <template for:each={product.materialOptions} for:item="materialOption">
+                                            <div key={materialOption.uniqueId} class="option-item">
+                                                <span 
+                                                    class="material-option"
+                                                    data-product-id={product.Id}
+                                                    data-material-name={materialOption.name}
+                                                    onclick={handleMaterialChange}>
+                                                    <span class="material-icon" style={materialOption.iconStyle}>
+                                                        <lightning-icon 
+                                                            icon-name={materialOption.iconName} 
+                                                            size="x-small"
+                                                            alternative-text={materialOption.name}>
+                                                        </lightning-icon>
+                                                    </span>
+                                                    <span class="selected-marker" if:true={materialOption.isSelected}></span>
+                                                </span>
+                                                <span class="option-name">{materialOption.name}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                
+                                <lightning-button 
+                                    variant="brand"
+                                    label="Add to Cart" 
+                                    class="add-to-cart-btn"
+                                    data-id={product.Id}
+                                    onclick={handleAddToCart}>
+                                </lightning-button>
+                            </div>
+                        </article>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>

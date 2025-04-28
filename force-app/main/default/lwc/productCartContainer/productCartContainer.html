@@ -1,0 +1,45 @@
+<template>
+    <div class="slds-page-header slds-m-bottom_medium">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <h1 class="slds-page-header__title">Product Catalog</h1>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <lightning-button label="Logout" 
+                                variant="destructive"
+                                onclick={handleLogout}></lightning-button>
+                <lightning-button label={cartItemCount} 
+                                variant="brand"
+                                onclick={openCart}></lightning-button>
+            </div>
+        </div>
+    </div>
+
+    <lightning-card title="Account Details" icon-name="standard:account">
+        <c-account-details account-id={accountId}></c-account-details>
+    </lightning-card>
+
+    <c-product-list onaddtocart={handleAddToCart} class="slds-m-top_medium"></c-product-list>
+
+    <template if:true={isCartOpen}>
+        <section class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Shopping Cart</h2>
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse slds-modal__close slds-button_icon-large" onclick={closeCart} title="Close Cart">
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="Close Cart" class="slds-button__icon slds-button__icon_large"></lightning-icon>
+                        <span class="slds-assistive-text">Close Cart</span>
+                    </button>
+                </header>
+                <div class="slds-modal__content">
+                    <c-cart-items cart-items={cartItems} 
+                                onremovefromcart={handleRemoveFromCart}
+                                oncartupdate={handleCartUpdate}
+                                oncheckout={handleCheckout}></c-cart-items>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+</template>

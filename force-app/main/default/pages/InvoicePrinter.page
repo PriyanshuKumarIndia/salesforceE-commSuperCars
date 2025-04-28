@@ -1,0 +1,82 @@
+<apex:page standardController="CustomInvoice__c" extensions="InvoicePrintController"  showHeader="false" sidebar="false">
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <img src="https://images.unsplash.com/photo-1554672723-b208dc85134f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Please pay on timr" style="height: 60px;" />
+            </div>
+            <div style="text-align: right;">
+                <h2 style="margin: 0;">INVOICE</h2>
+                <p style="margin: 0; font-size: 12px;">Date: {!TEXT(TODAY())}</p>
+            </div>
+        </div>
+
+        <table style="width:100%; margin-top: 10px;">
+            <tr>
+                <td><strong>Invoice Number:</strong></td>
+                <td>{!CustomInvoice__c.Name}</td>
+            </tr>
+            <tr>
+                <td><strong>Sale Order:</strong></td>
+                <td>{!CustomInvoice__c.SaleOrder__r.Name}</td>
+            </tr>
+            <tr>
+                <td><strong>Account:</strong></td>
+                <td>{!CustomInvoice__c.CustomAccount__r.Name}</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>{!CustomInvoice__c.Email__c}</td>
+            </tr>
+            <tr>
+                <td><strong>Phone:</strong></td>
+                <td>{!CustomInvoice__c.Phone__c}</td>
+            </tr>
+            <tr>
+                <td><strong>City:</strong></td>
+                <td>{!CustomInvoice__c.Address__c}</td>
+            </tr>
+        </table>
+
+        <h3 style="margin-top: 40px;">Invoice Line Items</h3>
+        <table style="width:100%; border-collapse: collapse; margin-top: 10px;" border="1">
+            <thead style="background-color: #f2f2f2;">
+                <tr>
+                    <th style="padding: 8px;">Product</th>
+                    <th style="padding: 8px;">Order Type</th>
+                    <th style="padding: 8px;">Quantity</th>
+
+                    <th style="padding: 8px;">Unit Price</th>
+                    <th style="padding: 8px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!invoiceLines}" var="line">
+                    <tr>
+                        <td style="padding: 6px;">{!line.Product__r.Name}</td>
+                        <td style="padding: 6px;">{!line.OrderType__c}</td>
+                        <td style="padding: 6px;">{!line.Quantity__c}</td>
+                        <td style="padding: 6px;"><span>&#8377;</span>{!line.UnitPrice__c}</td>
+                        <td style="padding: 6px;"><span>&#8377;</span>{!line.Total__c}</td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px; display: flex; flex-direction:column;">
+            <p>
+                Payment Status: <strong>{!CustomInvoice__c.Status__c}</strong>
+            </p>
+            <p>
+                Total Payable: &#8377;<strong>{!CustomInvoice__c.TotalPayableAmount__c}</strong>
+            </p>
+            <p>Amount Paid : <strong>{!CustomInvoice__c.AmountPaid__c}</strong></p>
+            <p>Pending Amount : <strong>{!CustomInvoice__c.PendingAmount__c}</strong></p>
+    
+        </div>
+
+        <p style="text-align:center; margin-top: 50px;">
+            Thanks for visiting <strong>{!CustomInvoice__c.CustomAccount__r.Name}!</strong>
+        </p>
+    </div>
+</apex:page>

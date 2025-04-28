@@ -1,0 +1,64 @@
+<apex:page controller="BillPrintController" showHeader="false" sidebar="false">
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <img src="https://images.unsplash.com/photo-1554672723-b208dc85134f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Please pay on time" style="height: 60px;" />
+            </div>
+            <div style="text-align: right;">
+                <h2 style="margin: 0;">Bill</h2>
+                <p style="margin: 0; font-size: 12px;">Date: {!TEXT(TODAY())}</p>
+            </div>
+        </div>
+
+        <apex:outputPanel rendered="{!NOT(ISNULL(invoice))}">
+            <table style="width:100%; margin-top: 10px;">
+                <tr><td><strong>Bill Number:</strong></td><td>{!invoice.Name}</td></tr>
+                <tr><td><strong>Sale Order:</strong></td><td>{!invoice.SaleOrder__r.Name}</td></tr>
+                <tr><td><strong>Account:</strong></td><td>{!invoice.CustomAccount__r.Name}</td></tr>
+                <tr><td><strong>Email:</strong></td><td>{!invoice.Email__c}</td></tr>
+                <tr><td><strong>Phone:</strong></td><td>{!invoice.Phone__c}</td></tr>
+                <tr><td><strong>City:</strong></td><td>{!invoice.Address__c}</td></tr>
+            </table>
+
+            <h3 style="margin-top: 40px;">Bill Line Items</h3>
+            <table style="width:100%; border-collapse: collapse; margin-top: 10px;" border="1">
+                <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th style="padding: 8px;">Product</th>
+                        <th style="padding: 8px;">Order Type</th>
+                        <th style="padding: 8px;">Quantity</th>
+                        <th style="padding: 8px;">Unit Price</th>
+                        <th style="padding: 8px;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!invoiceLines}" var="line">
+                        <tr>
+                            <td style="padding: 6px;">{!line.Product__r.Name}</td>
+                            <td style="padding: 6px;">{!line.OrderType__c}</td>
+                            <td style="padding: 6px;">{!line.Quantity__c}</td>
+                            <td style="padding: 6px;"><span>&#8377;</span>{!line.UnitPrice__c}</td>
+                            <td style="padding: 6px;"><span>&#8377;</span>{!line.Total__c}</td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 20px; display: flex; flex-direction:column;">
+                <p>Payment Status: <strong>{!invoice.Status__c}</strong></p>
+                <p>Total Payable: &#8377;<strong>{!invoice.TotalPayableAmount__c}</strong></p>
+                <p>Amount Paid : <strong>{!invoice.AmountPaid__c}</strong></p>
+                <p>Pending Amount : <strong>{!invoice.PendingAmount__c}</strong></p>
+            </div>
+
+            <p style="text-align:center; margin-top: 50px;">
+                Thanks for visiting <strong>{!invoice.CustomAccount__r.Name}!</strong>
+            </p>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!ISNULL(invoice)}">
+            <p style="color: red; text-align: center;">No bill found.</p>
+        </apex:outputPanel>
+    </div>
+</apex:page>

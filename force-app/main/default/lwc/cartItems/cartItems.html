@@ -1,0 +1,150 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium">
+            <template if:true={cartItems.length}>
+                <div class="slds-table_header-fixed_container slds-scrollable_x">
+                    <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Product">Product</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Price">Price</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Qty">Quantity</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Total">Total</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Action">Action</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={cartItems} for:item="item">
+                                <tr key={item.id} class="slds-hint-parent">
+                                    <td data-label="Product">
+                                        <div class="slds-truncate">
+                                            <div class="slds-media">
+                                                <div class="slds-media__body">
+                                                    <div class="slds-text-heading_small">{item.name}</div>
+                                                    <div class="slds-text-color_weak slds-text-body_small">{item.color}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td data-label="Price">
+                                        <div class="slds-truncate">
+                                            <lightning-formatted-number 
+                                                value={item.price} 
+                                                format-style="currency"
+                                                currency-code="INR"
+                                                class="slds-text-body_regular">
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td data-label="Qty">
+                                        <div class="slds-truncate">
+                                            <div class="slds-button-group">
+                                                <lightning-button-icon 
+                                                    icon-name="utility:dash" 
+                                                    variant="border-filled"
+                                                    onclick={decreaseQty}
+                                                    data-id={item.id}
+                                                    class="slds-m-right_x-small"
+                                                    alternative-text="Decrease quantity">
+                                                </lightning-button-icon>
+                                                <span class="slds-badge slds-badge_lightest slds-p-horizontal_medium">
+                                                    {item.quantity}
+                                                </span>
+                                                <lightning-button-icon 
+                                                    icon-name="utility:add" 
+                                                    variant="border-filled"
+                                                    onclick={increaseQty}
+                                                    data-id={item.id}
+                                                    class="slds-m-left_x-small"
+                                                    alternative-text="Increase quantity">
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td data-label="Total">
+                                        <div class="slds-truncate">
+                                            <lightning-formatted-number 
+                                                value={item.total} 
+                                                format-style="currency"
+                                                currency-code="INR"
+                                                class="slds-text-heading_small slds-text-color_success">
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td data-label="Action">
+                                        <div class="slds-truncate">
+                                            <div class="">
+                                                <lightning-button-icon 
+                                                    icon-name="utility:delete" 
+                                                    variant="border-filled"
+                                                    class="slds-button_icon-error  slds-m-left_x-small"
+                                                    onclick={removeItem}
+                                                    data-id={item.id}
+                                                    alternative-text="Remove from cart">
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="slds-grid slds-grid_align-end slds-m-top_large">
+                    <div class="slds-col slds-size_12-of-12 slds-large-size_1-of-2">
+                        <div class="slds-box slds-theme_shade slds-p-around_medium slds-rounded_medium">
+                            <div class="slds-text-heading_medium slds-p-bottom_small">
+                                Order Summary
+                            </div>
+                            <div class="slds-m-vertical_medium slds-border-top slds-p-top_x-small">
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small">
+                                    <div class="slds-col slds-text-title_bold slds-text-heading_large">
+                                        Total Amount:
+                                    </div>
+                                    <div class="slds-col slds-text-align_right">
+                                        <lightning-formatted-number 
+                                            value={cartTotal} 
+                                            format-style="currency" 
+                                            currency-code="INR"
+                                            maximum-fraction-digits="2"
+                                            maximum-significant-digits="16"
+                                            class="slds-text-heading_large slds-text-color_success slds-truncate">
+                                        </lightning-formatted-number>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-m-top_medium slds-align_absolute-center">
+                                <lightning-button label="Proceed to Checkout" variant="brand" onclick={handleCheckout}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={cartItems.length}>
+                <div class="slds-p-around_large slds-illustration slds-illustration_small">
+                    <div class="slds-text-longform">
+                        <div class="slds-text-align_center">
+                            <span class="slds-icon_container slds-icon-utility-shopping_bag slds-icon_container_circle">
+                                <lightning-icon icon-name="utility:shopping_bag" size="large" variant="warning"></lightning-icon>
+                            </span>
+                            <h3 class="slds-text-heading_medium slds-m-top_medium">Your cart is empty</h3>
+                            <p class="slds-text-body_regular slds-m-top_small">Add items to your cart to see them here.</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

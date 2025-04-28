@@ -1,0 +1,36 @@
+<template>
+    <lightning-card title="Products">
+        <div class="slds-p-around_medium">
+            <div class="slds-grid slds-wrap">
+                <template for:each={products.data} for:item="product">
+                    <div key={product.Id} class="slds-col slds-size_1-of-3 slds-p-around_small">
+                        <article class="slds-card slds-card_boundary product-card">
+                            <div class="slds-card__body slds-card__body_inner">
+                                <h3 class="slds-text-heading_medium"><strong>{product.Name}</strong></h3>
+                                
+                                <h5 class="slds-text-heading_small"><pre>Price : <lightning-formatted-number 
+                                    value={product.UnitPrice__c} 
+                                    format-style="currency"
+                                    currency-code="INR"
+                                    class="slds-text-heading_small slds-text-color_success">
+                                </lightning-formatted-number></pre></h5>
+                                
+                                <h5 class="slds-text-heading_small"><pre>Horsepower : {product.HorsePower__c}</pre></h5>
+                                <h5 class="slds-text-heading_small"><pre>Interior : {product.InteriorMaterial__c}</pre></h5>
+                                <h5 class="slds-text-heading_small"><pre>Engine Type : {product.EngineType__c}</pre></h5>
+                                <h5 class="slds-text-heading_small"><pre>Top speed : {product.TopSpeed__c}Mph</pre></h5>
+                                <h5 class="slds-text-heading_small"><pre>Colors : {product.Color__c}</pre></h5>
+                                <lightning-button 
+                                    label="Add to Cart" 
+                                    class="slds-m-top_small"
+                                    data-id={product.Id}
+                                    onclick={handleAddToCart}>
+                                </lightning-button>
+                            </div>
+                        </article>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>
