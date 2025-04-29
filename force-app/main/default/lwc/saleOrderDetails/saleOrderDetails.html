@@ -123,7 +123,7 @@
                     <section class="slds-card slds-p-around_medium slds-theme_shade">
                         <h2 class="slds-text-heading_medium slds-m-bottom_small">Payment Summary</h2>
                         <div class="slds-grid slds-wrap slds-gutters">
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12">
                                 <div class="slds-box slds-theme_info slds-text-align_center slds-p-around_medium">
                                     <p class="slds-text-title_caps slds-text-color_inverse">Total Amount</p>
                                     <p class="slds-text-heading_medium">
@@ -131,7 +131,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12">
                                 <div class="slds-box slds-theme_success slds-text-align_center slds-p-around_medium">
                                     <p class="slds-text-title_caps slds-text-color_inverse">Amount Paid</p>
                                     <p class="slds-text-heading_medium">
@@ -139,17 +139,34 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                                <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_medium">
-                                    <p class="slds-text-title_caps slds-text-color_inverse">Pending Amount</p>
-                                    <p class="slds-text-heading_medium">
-                                        <lightning-formatted-number class="slds-text-color_inverse" value={saleOrder.PendingAmount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
-                                    </p>
-                                    <template if:true={saleOrder.PendingInitiatedPayment__c}>
-                                        <p class="slds-text-color_weak slds-m-top_x-small">Payment Initiated</p>
-                                    </template>
+                            <template if:false={saleOrder.PendingInitiatedPayment__c}>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12">
+                                    <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_medium">
+                                        <p class="slds-text-title_caps slds-text-color_inverse">Pending Amount</p>
+                                        <p class="slds-text-heading_medium">
+                                            <lightning-formatted-number class="slds-text-color_inverse" value={saleOrder.PendingAmount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </template>
+                            <template if:true={saleOrder.PendingInitiatedPayment__c}>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12">
+                                    <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_medium">
+                                        <p class="slds-text-title_caps slds-text-color_inverse">Pending</p>
+                                        <p class="slds-text-heading_medium">
+                                            <lightning-formatted-number class="slds-text-color_inverse" value={saleOrder.PendingAmount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12">
+                                    <div class="slds-box slds-theme_info slds-text-align_center slds-p-around_medium">
+                                        <p class="slds-text-title_caps slds-text-color_inverse">Initiated</p>
+                                        <p class="slds-text-heading_medium">
+                                            <lightning-formatted-number class="slds-text-color_inverse" value={saleOrder.PendingInitiatedPayment__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                        </p>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </section>
                 </div>
@@ -159,7 +176,7 @@
                         <div class="slds-grid slds-wrap slds-gutters">
                             <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-4">
                                 <div class="slds-box slds-theme_success slds-text-align_center slds-p-around_large slds-button slds-button_stretch" style="cursor:pointer;" onclick={handleMakePayment}>
-                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Make payment&nbsp;</p>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold slds-p-around_small">Make payment&nbsp;</p>
                                     <p class="slds-text-heading_medium">
                                         &#8377;
                                     </p>
@@ -167,15 +184,15 @@
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
                                 <div class="slds-box slds-theme_info slds-text-align_center slds-p-around_large slds-button slds-button_stretch" style="cursor:pointer;" onclick={handlePrintBill}>
-                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">Print Bill</p>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold slds-p-around_small">Print Bill</p>
                                     <p class="slds-text-heading_medium slds-text-align_center">
                                         🧾
                                     </p>
                                 </div>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 ">
                                 <div class="slds-box slds-theme_warning slds-text-align_center slds-p-around_large slds-button slds-button_stretch" role="button" style="cursor:pointer;" onclick={handlePreviousPayments}>
-                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold">payments</p>
+                                    <p class="slds-text-title_caps slds-text-color_inverse slds-text-title_bold slds-p-around_small">payments</p>
                                     <p class="slds-text-heading_medium slds-text-align_center">
                                         💵
                                     </p>
@@ -197,7 +214,7 @@
                         <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-text-heading_medium">Print Bill</h2>
+                    <h2 class="slds-text-heading_medium">Bill</h2>
                 </header>
 
                 <div class="slds-modal__content slds-p-around_medium">
@@ -209,6 +226,145 @@
                 </footer>
             </div>
         </section>
+        
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <template if:true={isMakePaymentModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                            onclick={closeMakePaymentModal} title="Close" aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Make Payment</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input type="number" label="Amount" required onchange={handlePaymentAmountChange} step="0.01"></lightning-input>
+                <lightning-combobox name="PaymentStatus"
+                                    label="Status"
+                                    value={PaymentStatus}
+                                    placeholder="Select Status"
+                                    options={optionsForPaymentStatus}
+                                    onchange={handlePaymentStatusChange}
+                                    required >
+                    </lightning-combobox>
+
+                    <div class="slds-m-top_small">
+                        <lightning-button variant="success" label="Submit" onclick={handleMakePaymentSubmit}></lightning-button>
+                    </div>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={closeMakePaymentModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <template if:true={isPreviousPaymentsModalOpen}>
+        <template if:true={paymentLines}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                onclick={closePreviousPaymentsModal} title="Close" aria-label="Close">
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">Previous Payments</h2>
+                    </header>
+                    
+                    <div class="slds-table_header-fixed_container slds-scrollable_x">
+                        <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="slds-text-title_caps" scope="col">
+                                        <div class="slds-truncate" title="PaymentName">Payment Name</div>
+                                    </th>
+                                    <th class="slds-text-title_caps" scope="col">
+                                        <div class="slds-truncate" title="Account">Account</div>
+                                    </th>
+                                    <th class="slds-text-title_caps" scope="col">
+                                        <div class="slds-truncate" title="Amount">Amount</div>
+                                    </th>
+                                    <th class="slds-text-title_caps" scope="col">
+                                        <div class="slds-truncate" title="Status">Status</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={paymentLines} for:item="payment">
+                                    <tr key={payment.id} class="slds-hint-parent">
+                                        <td data-label="PaymentName">
+                                            <div class="slds-truncate">
+                                                <div class="slds-media">
+                                                    <div class="slds-media__body">
+                                                        <div class="slds-text-heading_small">{payment.Name}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Account">
+                                            <div class="slds-truncate">
+                                                <div class="slds-media">
+                                                    <div class="slds-media__body">
+                                                        <div class="slds-text-heading_small">{payment.CustomAccount__r.Name}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Amount">
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number 
+                                                    value={payment.Amount__c} 
+                                                    format-style="currency"
+                                                    currency-code="INR"
+                                                    class="slds-text-heading_small slds-text-color_success">
+                                                </lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td data-label="Status">
+                                            <div class="slds-truncate">
+                                                <div class="slds-media">
+                                                    <div class="slds-media__body">
+                                                        <div class="slds-text-heading_small">{payment.Status__c}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+    
+    
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" label="Cancel" onclick={closePreviousPaymentsModal}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+        </template>
+        <template if:false={paymentLines}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                onclick={closePreviousPaymentsModal} title="Close" aria-label="Close">
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">No payments Found!</h2>
+                    </header>
+                </div>
+            </section>
+        </template>
         
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>

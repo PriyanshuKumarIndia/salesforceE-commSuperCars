@@ -1,0 +1,77 @@
+<template>
+  <template if:false={isLoggedin}>
+    <lightning-card class="auth-card">
+      <div class="auth-container">
+        <div class="auth-toggle">
+          <button class="auth-tab" onclick={showLogin}>Login</button>
+          <button class="auth-tab" onclick={showSignup}>Sign Up</button>
+        </div>
+  
+        <template if:true={isLogin}>
+          <div class="form">
+            <lightning-input label="Email" type="email" value={loginEmail} required onchange={handleLoginEmail}></lightning-input>
+            <div class="password-input-container">
+                <lightning-input label="Password" type={loginPasswordType} 
+                  value={loginPassword} required onchange={handleLoginPassword}
+                  class="password-input">
+                </lightning-input>
+                <lightning-button-icon 
+                  class="toggle-password" 
+                  icon-name={loginPasswordIcon}
+                  alternative-text="Toggle Password Visibility"
+                  onclick={toggleLoginPassword}>
+                </lightning-button-icon>
+              </div>
+            <lightning-button variant="brand" label="Login" onclick={handleLogin} class="action-button"></lightning-button>
+          </div>
+        </template>
+  
+        <template if:true={isSignup}>
+            <div class="form">
+                <lightning-input label="Username" type="text" value={username} 
+                  required onchange={handleUsername}></lightning-input>
+  
+                <lightning-input label="Email" type="email" value={signupEmail} 
+                  required onchange={handleSignupEmail}></lightning-input>
+  
+                <lightning-input label="Phone" type="tel" value={signupPhone} 
+                  required onchange={handleSignupPhone}></lightning-input>
+  
+                <lightning-combobox label="User Type" value={userType} 
+                  required options={userTypeOptions} 
+                  onchange={handleUserType}></lightning-combobox>
+  
+                <lightning-input label="Address" type="text" value={address} 
+                  onchange={handleAddress}></lightning-input>
+  
+                  <div class="password-input-container">
+                    <lightning-input label="Password" type={signupPasswordType} 
+                      value={signupPassword} onchange={handleSignupPassword}
+                      class="password-input" required>
+                    </lightning-input>
+                    <lightning-button-icon 
+                      class="toggle-password" 
+                      icon-name={signupPasswordIcon}
+                      alternative-text="Toggle Password Visibility"
+                      onclick={toggleSignupPassword}>
+                    </lightning-button-icon>
+                  </div>
+  
+                <div class="password-strength">
+                    <pre class="strength-text">Password Strength : <strong>{passwordStrengthText}</strong></pre>
+                    <div class="strength-meter-wrapper">
+                        <div class="strength-meter" style={meterStyle}></div>
+                    </div>
+                </div>
+  
+                <lightning-button variant="brand" label="Sign Up" 
+                  onclick={handleSignup} class="action-button"></lightning-button>
+            </div>
+          </template>
+      </div>
+    </lightning-card>
+  </template>
+  <template if:true={isLoggedin}>
+    <c-product-cart-container account-id={customAccountId} onlogout={handleLogout}></c-product-cart-container>
+  </template>
+</template>

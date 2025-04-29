@@ -75,4 +75,41 @@ public with sharing class SaleOrderController {
             return null;
         }
     }
+
+    @AuraEnabled
+    public static Boolean cancelSaleOrder(Id saleOrderId) {
+        try {
+            SaleOrder__c saleorder = [SELECT id,status__c FROM SaleOrder__c WHERE Id = :saleOrderId LIMIT 1];
+
+            if(saleorder.status__c == 'Draft'){
+                saleOrder.Status__c = 'Cancelled';
+                update saleOrder;
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception e) {
+            System.debug('Error while updating SaleOrder to cancelled: ' + e.getMessage());
+            return false;
+        }
+    }
+
+    @AuraEnabled
+    public static Boolean deleteSaleOrder(Id saleOrderId) {
+        try {
+            SaleOrder__c saleorder = [SELECT id,status__c FROM SaleOrder__c WHERE Id = :saleOrderId LIMIT 1];
+
+            if(saleorder.status__c == 'Draft'){
+                delete saleOrder;
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception e) {
+            System.debug('Error while deleting SaleOrder : ' + e.getMessage());
+            return false;
+        }
+    }
 }
