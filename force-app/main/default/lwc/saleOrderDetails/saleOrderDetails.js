@@ -177,8 +177,13 @@ export default class SaleOrderDetails extends LightningElement {
                 return;
             }
 
-            if (currentStatus === 'Cancelled' || currentStatus === 'Completed') {
-                this.showToast('Cannot cancel order', 'Cannot generate bill for the cancelled or completed order!', 'error');
+            if (currentStatus === 'Cancelled') {
+                this.showToast('Cannot cancel order', 'Cannot cancel the cancelled order!', 'error');
+                return;
+            }
+
+            if(currentStatus === 'Completed'){
+                this.showToast('Cannot cancel order', 'Cannot cancel the completed order!', 'error');
                 return;
             }
 
@@ -209,7 +214,7 @@ export default class SaleOrderDetails extends LightningElement {
             }
 
             if (currentStatus === 'Cancelled' || currentStatus === 'Completed') {
-                this.showToast('Cannot delete order', 'Cannot generate bill for the cancelled or completed order!', 'error');
+                this.showToast('Cannot delete order', 'Cannot delete the cancelled or completed order!', 'error');
                 return;
             }
 
@@ -222,7 +227,7 @@ export default class SaleOrderDetails extends LightningElement {
 
             this.showToast('SucessFully ordered deleted!', 'Order deleted', 'success');
 
-            window.location.assign('https://orgfarm-79e473cc35-dev-ed.develop.lightning.force.com/lightning/page/home');
+            window.location.assign('https://orgfarm-79e473cc35-dev-ed.develop.lightning.force.com/lightning/n/Landing_Page');
         }
         catch (error) {
             console.error('Error in handleDeleteOrder:', error);
@@ -231,10 +236,29 @@ export default class SaleOrderDetails extends LightningElement {
     }
 
     handleMakePayment(){
+        const currentStatus = this.getsaleOrderStatus();
+        if(currentStatus === 'Draft'){
+            this.showToast('Cannot Make payment', 'First generate the bill then try to pay again!', 'info');
+            return;
+        }
+        if (currentStatus === 'Cancelled' || currentStatus === 'Completed') {
+            this.showToast('Cannot Make payment', 'Cannot Make payment for the cancelled or completed order!', 'error');
+            return;
+        }
         this.isMakePaymentModalOpen = true;
     }
 
     handlePrintBill(){
+        const currentStatus = this.getsaleOrderStatus();
+        if(currentStatus === 'Draft'){
+            this.showToast('Cannot print bill', 'First generate the bill!', 'error');
+            return;
+        }
+        if (currentStatus === 'Cancelled') {
+            this.showToast('Cannot print bill', 'Cannot print bill for the cancelled order!', 'error');
+            return;
+        }
+
         if(this.InvoiceId==undefined || this.InvoiceId=='' || this.InvoiceId==null){
             this.showToast('No Invoice to print', 'No Invoice to print', 'info');
             return;
@@ -242,6 +266,20 @@ export default class SaleOrderDetails extends LightningElement {
         this.visualforceUrl = `https://orgfarm-79e473cc35-dev-ed--c.develop.vf.force.com/apex/n/BillPrinter?InvoiceId=${this.InvoiceId}`;
         this.isModalOpen = true;
     }
+
+    handlePreviousPayments(){
+        const currentStatus = this.getsaleOrderStatus();
+        if(currentStatus === 'Draft'){
+            this.showToast('Cannot check previous payment', 'No bill found to check payment', 'info');
+            return;
+        }
+        if (currentStatus === 'Cancelled') {
+            this.showToast('Cannot check payments', 'There will be no payments for the cancelled order!', 'error');
+            return;
+        }
+        this.isPreviousPaymentsModalOpen = true;
+    }
+
     closeModal() {
         this.isModalOpen = false;
     }
@@ -250,9 +288,6 @@ export default class SaleOrderDetails extends LightningElement {
         this.isMakePaymentModalOpen = false;
     }
 
-    handlePreviousPayments(){
-        this.isPreviousPaymentsModalOpen = true;
-    }
 
     closePreviousPaymentsModal(){
         this.isPreviousPaymentsModalOpen = false;

@@ -1,9 +1,14 @@
 <template>
     <lightning-card title="Premium Super Cars" icon-name="custom:custom97">
+        <lightning-carousel disable-auto-scroll>
+            <lightning-carousel-image src={URL1} alternative-text="There was a Image">
+
+            </lightning-carousel-image>
+        </lightning-carousel>
         <div class="slds-p-around_medium">
             <div class="slds-grid slds-wrap slds-grid_pull-padded">
                 <template for:each={processedProducts} for:item="product">
-                    <div key={product.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-p-around_small">
+                    <div key={product.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 slds-p-around_small">
                         <article class="product-card" style={product.cardStyle}>
                             <div class="product-card-inner" style={product.accentStyle}>
                                 <h3 class="slds-text-heading_medium product-title">{product.Name}</h3>
@@ -96,6 +101,13 @@
                                     class="add-to-cart-btn"
                                     data-id={product.Id}
                                     onclick={handleAddToCart}>
+                                </lightning-button>
+                                <lightning-button 
+                                    variant="info"
+                                    label="View Details" 
+                                    class="add-to-cart-btn"
+                                    data-id={product.Id}
+                                    onclick={handleViewDeatils}>
                                 </lightning-button>
                             </div>
                         </article>

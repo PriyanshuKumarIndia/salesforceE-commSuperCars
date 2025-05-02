@@ -1,10 +1,15 @@
 import { LightningElement, wire, track } from 'lwc';
 import getProducts from '@salesforce/apex/ProductCartController.getProducts'; 
+import Bugatti from '@salesforce/resourceUrl/Bugatti';
 
 export default class ProductListDesigned extends LightningElement {
     @wire(getProducts) products;
     @track selectedColors = {};
     @track selectedMaterials = {};
+    URL1 = Bugatti + '/1.webp';
+    URL2 = Bugatti + '/2.webp';
+    URL3 = Bugatti + '/3.webp';
+    URL0 = Bugatti + '/0.webp';
     
     @track colorMap = {
         red: "#e53935",
@@ -78,7 +83,12 @@ export default class ProductListDesigned extends LightningElement {
     }
 
     getCardBackgroundStyle(colorCode) {
-        return `background: linear-gradient(145deg, ${colorCode}22, ${colorCode}44);`;
+        // return `background: linear-gradient(145deg, ${colorCode}22, ${colorCode}44);`;
+        if(colorCode == '#1e88e5') return `background: url(${this.URL2}) center center / cover no-repeat;`;
+        if(colorCode == '#e53935') return `background: url(${this.URL0}) center center / cover no-repeat;`;
+        if(colorCode == '#222222') return `background: url(${this.URL3}) center center / cover no-repeat;`;
+        
+        return `background: url(${this.URL2}) center center / cover no-repeat;`;
     }
 
     getAccentStyle(colorCode) {
