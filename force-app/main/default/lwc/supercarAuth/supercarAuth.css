@@ -98,6 +98,10 @@
     --slds-c-input-text-color: #16325c;
 }
 
+
+
+
+
 .form lightning-input:focus-within {
     --slds-c-input-color-border: #0070d2;
     --slds-c-input-shadow: 0 0 0 1px #0070d2, 0 2px 4px rgba(0, 0, 0, 0.05);
