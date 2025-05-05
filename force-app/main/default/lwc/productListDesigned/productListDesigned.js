@@ -3,13 +3,38 @@ import getProducts from '@salesforce/apex/ProductCartController.getProducts';
 import Bugatti from '@salesforce/resourceUrl/Bugatti';
 
 export default class ProductListDesigned extends LightningElement {
+    isCarDetailOpen = false;
+
+    selectedProduct;
+    modifiedProducts = [];
+
+    @track currentIndex = 0;    
+
     @wire(getProducts) products;
     @track selectedColors = {};
-    @track selectedMaterials = {};
     URL1 = Bugatti + '/1.webp';
     URL2 = Bugatti + '/2.webp';
     URL3 = Bugatti + '/3.webp';
     URL0 = Bugatti + '/0.webp';
+
+    images = [
+        this.URL1,
+        this.URL2,
+        this.URL0,
+        this.URL3
+    ];
+    get currentImage() {
+        return this.images[this.currentIndex];
+    }
+
+    handleNext() {
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    }
+
+    handlePrev() {
+        this.currentIndex =
+            (this.currentIndex - 1 + this.images.length) % this.images.length;
+    }
     
     @track colorMap = {
         red: "#e53935",
@@ -21,29 +46,28 @@ export default class ProductListDesigned extends LightningElement {
         yellow: "#ffd600",
         silver: "#bdbdbd"
     };
-    
-    @track materialIconMap = {
-        leather: { icon: "custom:custom33", color: "#7F4D0E" },
-        alcantara: { icon: "custom:custom33", color: "#5E5E5E" },
-        fabric: { icon: "custom:custom33", color: "#2F72A8" },
-        carbon: { icon: "custom:custom33", color: "#333333" },
-        wood: { icon: "custom:custom33", color: "#9C5221" }
-    };
 
     connectedCallback() {
         console.log('connectedCallback in productList');
     }
 
-    get processedProducts() {
+    // It will run after every update noice
+    renderedCallback(){
+        console.log('renderedCallback in productList');
+        this.modifiedProducts = this.processedProducts1();
+    }
+
+    get processedProducts() {        
+        return this.processedProducts1();
+    }
+
+    processedProducts1() {
         if (!this.products || !this.products.data) return [];
         
         return this.products.data.map(product => {
             const colors = product.Color__c ? product.Color__c.split(';') : [];
             const selectedColor = this.selectedColors[product.Id] || (colors.length > 0 ? colors[0] : null);
             const colorCode = selectedColor ? this.colorMap[selectedColor.toLowerCase()] : "#ffffff";
-            
-            const materials = product.InteriorMaterial__c ? product.InteriorMaterial__c.split(';') : [];
-            const selectedMaterial = this.selectedMaterials[product.Id] || (materials.length > 0 ? materials[0] : null);
             
             const colorOptions = colors.map(color => {
                 const colorLower = color.toLowerCase();
@@ -57,25 +81,10 @@ export default class ProductListDesigned extends LightningElement {
                 };
             });
             
-            const materialOptions = materials.map(material => {
-                const materialLower = material.toLowerCase();
-                const materialInfo = this.materialIconMap[materialLower] || { icon: "custom:custom33", color: "#6B6D70" };
-                
-                return {
-                    name: material,
-                    uniqueId: `${product.Id}-material-${material}`,
-                    isSelected: material === selectedMaterial,
-                    iconName: materialInfo.icon,
-                    iconStyle: `color: ${materialInfo.color};`
-                };
-            });
-            
             return {
                 ...product,
                 colorOptions: colorOptions,
-                materialOptions: materialOptions,
                 selectedColor: selectedColor,
-                selectedMaterial: selectedMaterial,
                 cardStyle: this.getCardBackgroundStyle(colorCode),
                 accentStyle: this.getAccentStyle(colorCode)
             };
@@ -88,7 +97,7 @@ export default class ProductListDesigned extends LightningElement {
         if(colorCode == '#e53935') return `background: url(${this.URL0}) center center / cover no-repeat;`;
         if(colorCode == '#222222') return `background: url(${this.URL3}) center center / cover no-repeat;`;
         
-        return `background: url(${this.URL2}) center center / cover no-repeat;`;
+        return `background: url(${this.URL1}) center center / cover no-repeat;`;
     }
 
     getAccentStyle(colorCode) {
@@ -98,30 +107,35 @@ export default class ProductListDesigned extends LightningElement {
     handleColorChange(event) {
         const productId = event.currentTarget.dataset.productId;
         const colorName = event.currentTarget.dataset.colorName;
+
+        console.log('productId : ' + productId + '  :  ' + 'colorName : ' + colorName);
         
         this.selectedColors = {
             ...this.selectedColors,
             [productId]: colorName
         };
     }
-    
-    handleMaterialChange(event) {
-        const productId = event.currentTarget.dataset.productId;
-        const materialName = event.currentTarget.dataset.materialName;
-        
-        this.selectedMaterials = {
-            ...this.selectedMaterials,
-            [productId]: materialName
-        };
+
+    handleViewDeatils(event){
+        console.log('event.target.data.id ' + event.currentTarget.dataset.id);
+        console.log('Products : ' + this.modifiedProducts);
+        this.selectedProduct = this.modifiedProducts.find(product => product.Id === event.currentTarget.dataset.id);
+        console.log(this.selectedProduct.Id + 'I am the selected Product');
+        this.isCarDetailOpen = true;
     }
+
+    closeCarDetail(){
+        this.isCarDetailOpen = false;
+    }
+    
 
     handleAddToCart(event) {
         const productId = event.target.dataset.id;
         const product = this.products.data.find(p => p.Id === productId);
         const selectedColor = this.selectedColors[productId] || 
             (product.Color__c ? product.Color__c.split(';')[0] : null);
-        const selectedMaterial = this.selectedMaterials[productId] || 
-            (product.InteriorMaterial__c ? product.InteriorMaterial__c.split(';')[0] : null);
+
+        console.log('productId : ' + productId + '  :  ' + 'selectedColor : ' + selectedColor);
         
         this.dispatchEvent(new CustomEvent('addtocart', {
             detail: {
